@@ -6,7 +6,6 @@ import MobileNav from './components/common/MobileNav';
 import Footer from './components/common/Footer';
 import CompareFloatingBar from './components/compare/CompareFloatingBar';
 import StudentLoginModal from './components/common/StudentLoginModal';
-import Welcome from './pages/Welcome';
 
 import Home from './pages/Home';
 import Explore from './pages/Explore';
@@ -20,29 +19,7 @@ import Onboarding from './pages/Onboarding';
 import Profile from './pages/Profile';
 
 function AppContent() {
-  const {
-    isLoginModalOpen, openLoginModal, closeLoginModal,
-    studentProfile, showWelcome, enterAsGuest
-  } = useSettleIn();
-
-  // Show the landing / welcome page when no session
-  if (showWelcome) {
-    return (
-      <>
-        <Welcome
-          onLogin={openLoginModal}
-          onSignUp={openLoginModal}
-          onGuest={enterAsGuest}
-        />
-        {/* Login / Sign Up modal - floats over the Welcome page */}
-        <StudentLoginModal
-          isOpen={isLoginModalOpen}
-          onClose={closeLoginModal}
-          canDismiss={true}
-        />
-      </>
-    );
-  }
+  const { isLoginModalOpen, closeLoginModal, studentProfile } = useSettleIn();
 
   return (
     <Router>
@@ -68,7 +45,7 @@ function AppContent() {
         <MobileNav />
         <Footer />
 
-        {/* Edit Info Modal (shown from Profile / Navbar when already logged in) */}
+        {/* First-time Student Login / Setup Modal */}
         <StudentLoginModal
           isOpen={isLoginModalOpen}
           onClose={closeLoginModal}

@@ -65,8 +65,9 @@ export function SettleInProvider({ children }) {
     }
   });
 
-  // Welcome Page Gate - show landing page if no profile saved
-  const [showWelcome, setShowWelcome] = useState(() => {
+  // Login Modal Control
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(() => {
+    // If not logged in, auto-open when app starts
     try {
       const saved = localStorage.getItem('settlein_profile');
       return !saved;
@@ -74,9 +75,6 @@ export function SettleInProvider({ children }) {
       return true;
     }
   });
-
-  // Login Modal Control - only opens when triggered explicitly now
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
   // Search & Global Category
   const [searchQuery, setSearchQuery] = useState("");
@@ -122,12 +120,6 @@ export function SettleInProvider({ children }) {
       setSelectedCollegeId(profileData.collegeId);
     }
     setIsLoginModalOpen(false);
-    setShowWelcome(false);
-  };
-
-  // Guest / demo mode — skip login entirely
-  const enterAsGuest = () => {
-    setShowWelcome(false);
   };
 
   // Logout / Reset Demo handler
@@ -145,8 +137,7 @@ export function SettleInProvider({ children }) {
     setCompareList([]);
     setRecentlyViewed([]);
     setContactInquiries([]);
-    setIsLoginModalOpen(false);
-    setShowWelcome(true);
+    setIsLoginModalOpen(true);
   };
 
   // College Switcher Handler
@@ -343,9 +334,6 @@ export function SettleInProvider({ children }) {
         setStudentProfile,
         loginStudent,
         logoutStudent,
-        enterAsGuest,
-        showWelcome,
-        setShowWelcome,
         isLoginModalOpen,
         setIsLoginModalOpen,
         openLoginModal: () => setIsLoginModalOpen(true),
