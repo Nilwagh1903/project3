@@ -43,17 +43,24 @@ export default function ImageGallery({ images = [], title = "Property Image" }) 
         {/* Primary Big Photo */}
         <div 
           onClick={() => setLightboxIndex(0)}
-          className="md:col-span-2 relative h-72 sm:h-96 cursor-pointer group overflow-hidden"
+          className="md:col-span-2 relative h-72 sm:h-96 cursor-pointer group overflow-hidden select-none"
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => e.key === 'Enter' && setLightboxIndex(0)}
+          title="Click to view full photos gallery"
         >
           <img
             src={images[0]}
             alt={`${title} - Primary`}
             className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-200"
           />
-          <div className="absolute inset-0 bg-slate-950/10 group-hover:bg-transparent transition-colors" />
-          <span className="absolute bottom-3 left-3 bg-slate-900/80 text-white text-xs px-2.5 py-1 rounded flex items-center gap-1.5 backdrop-blur-xs">
+          <div className="absolute inset-0 bg-slate-950/10 group-hover:bg-transparent transition-colors pointer-events-none" />
+          <span className="absolute bottom-3 left-3 bg-slate-900/80 text-white text-xs px-2.5 py-1 rounded flex items-center gap-1.5 backdrop-blur-xs pointer-events-none">
             <Maximize2 className="w-3.5 h-3.5" />
-            <span>Click to view photos</span>
+            <span>Click to view {images.length} photos</span>
+          </span>
+          <span className="md:hidden absolute bottom-3 right-3 bg-slate-900/80 text-white text-[11px] font-semibold px-2 py-1 rounded backdrop-blur-xs pointer-events-none">
+            1 / {images.length} Photos
           </span>
         </div>
 

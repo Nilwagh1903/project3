@@ -40,13 +40,20 @@ export default function PropertyDetails() {
   // Find property
   const property = HOUSING_LISTINGS.find((p) => p.id === id) || HOUSING_LISTINGS[0];
 
-  // Record viewed property in recent list
+  // Record viewed property once per property ID without resetting scroll position
   useEffect(() => {
-    if (property) {
+    if (property?.id) {
       recordView(property.id);
-      window.scrollTo(0, 0);
+      
+      // If navigating directly to reviews hash, smooth scroll to it
+      if (window.location.hash.includes('review')) {
+        setTimeout(() => {
+          const el = document.getElementById('reviews-section');
+          el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 150);
+      }
     }
-  }, [property, recordView]);
+  }, [property?.id, recordView]);
 
   // Find reviews for this property
   const propertyReviews = REVIEWS.filter((r) => r.propertyId === property?.id);
@@ -137,7 +144,17 @@ export default function PropertyDetails() {
           </h1>
 
           <div className="flex flex-wrap items-center gap-3 text-xs text-slate-600">
-            <StarRating rating={property.rating} reviewsCount={property.reviewsCount} />
+            <button
+              type="button"
+              onClick={() => {
+                const el = document.getElementById('reviews-section');
+                el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+              className="flex items-center gap-1 hover:text-teal-700 hover:underline cursor-pointer group transition-colors"
+              title="Click to jump to student reviews"
+            >
+              <StarRating rating={property.rating} reviewsCount={property.reviewsCount} />
+            </button>
             <span>•</span>
             <span className="flex items-center gap-1">
               <MapPin className="w-3.5 h-3.5 text-teal-600" />
@@ -254,7 +271,7 @@ export default function PropertyDetails() {
           </section>
 
           {/* 5. Student Reviews Breakdown & List */}
-          <section className="space-y-6">
+          <section id="reviews-section" className="space-y-6 pt-4 scroll-mt-20">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-lg font-bold text-slate-900">Student Reviews & Ratings</h2>
@@ -268,6 +285,17 @@ export default function PropertyDetails() {
             />
 
             <ReviewList reviews={displayReviews} />
+
+            {/* Back to top helper */}
+            <div className="pt-2 flex justify-center">
+              <button
+                type="button"
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                className="text-xs text-slate-500 hover:text-slate-800 font-medium px-4 py-2 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors"
+              >
+                ↑ Back to top
+              </button>
+            </div>
           </section>
 
         </div>

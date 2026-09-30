@@ -39,17 +39,23 @@ export default function HousingCard({ property, onHover, isCompact = false }) {
           isCompact ? 'flex-row h-36' : 'flex-col sm:flex-row'
         }`}
       >
-        {/* Thumbnail Image */}
+        {/* Thumbnail Image - Clicking opens property */}
         <div className={`relative ${isCompact ? 'w-36 shrink-0' : 'sm:w-56 shrink-0 h-48 sm:h-auto'} bg-slate-100 overflow-hidden`}>
-          <img
-            src={property.images[0]}
-            alt={property.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-            loading="lazy"
-          />
+          <Link
+            to={`/property/${property.id}`}
+            className="block w-full h-full cursor-pointer group/img"
+            title={`View ${property.name}`}
+          >
+            <img
+              src={property.images[0]}
+              alt={property.name}
+              className="w-full h-full object-cover group-hover/img:scale-105 group-hover:scale-105 transition-transform duration-300"
+              loading="lazy"
+            />
+          </Link>
 
           {/* Type / Gender Tag */}
-          <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 items-start">
+          <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 items-start pointer-events-none">
             <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-slate-900/80 text-white backdrop-blur-xs">
               {property.type}
             </span>
@@ -60,7 +66,7 @@ export default function HousingCard({ property, onHover, isCompact = false }) {
             type="button"
             onClick={handleShortlistClick}
             aria-label={shortlisted ? "Remove from shortlist" : "Add to shortlist"}
-            className={`absolute top-2.5 right-2.5 p-1.5 rounded-full backdrop-blur-md transition-transform active:scale-90 ${
+            className={`absolute top-2.5 right-2.5 p-1.5 rounded-full backdrop-blur-md transition-transform active:scale-90 z-10 ${
               shortlisted
                 ? 'bg-rose-500 text-white shadow-sm'
                 : 'bg-white/80 text-slate-600 hover:bg-white hover:text-rose-500'
@@ -70,7 +76,7 @@ export default function HousingCard({ property, onHover, isCompact = false }) {
           </button>
 
           {/* Distance Indicator Overlay */}
-          <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between text-[11px] text-white bg-slate-900/70 backdrop-blur-xs px-2 py-1 rounded">
+          <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between text-[11px] text-white bg-slate-900/70 backdrop-blur-xs px-2 py-1 rounded pointer-events-none">
             <span className="truncate">{property.distanceKm} km from {currentCollege?.name || 'campus'}</span>
             <span className="shrink-0 text-slate-300">{property.walkingMins}m walk</span>
           </div>
@@ -98,9 +104,15 @@ export default function HousingCard({ property, onHover, isCompact = false }) {
               </h3>
             </Link>
 
-            {/* Ratings & Reviews */}
+            {/* Ratings & Reviews - Clicking opens reviews */}
             <div className="mt-1.5 flex items-center gap-3">
-              <StarRating rating={property.rating} reviewsCount={property.reviewsCount} />
+              <Link
+                to={`/property/${property.id}#reviews-section`}
+                className="hover:opacity-80 transition-opacity"
+                title="Read student reviews"
+              >
+                <StarRating rating={property.rating} reviewsCount={property.reviewsCount} />
+              </Link>
               <span className="text-slate-300">•</span>
               <span className="text-xs text-slate-500 truncate">{property.address.split(",")[1]?.trim() || property.address}</span>
             </div>

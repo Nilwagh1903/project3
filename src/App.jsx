@@ -6,6 +6,7 @@ import MobileNav from './components/common/MobileNav';
 import Footer from './components/common/Footer';
 import CompareFloatingBar from './components/compare/CompareFloatingBar';
 import StudentLoginModal from './components/common/StudentLoginModal';
+import ScrollToTop from './components/common/ScrollToTop';
 
 import Home from './pages/Home';
 import Explore from './pages/Explore';
@@ -23,6 +24,7 @@ function AppContent() {
 
   return (
     <Router>
+      <ScrollToTop />
       <div className="min-h-screen flex flex-col bg-slate-50 text-slate-800">
         <Navbar />
         

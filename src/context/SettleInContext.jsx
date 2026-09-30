@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useCallback } from 'react';
 import { COLLEGES } from '../data/colleges';
 import { HOUSING_LISTINGS } from '../data/listings';
 import { FOOD_LISTINGS } from '../data/foodListings';
@@ -114,16 +114,16 @@ export function SettleInProvider({ children }) {
   }, [studentProfile]);
 
   // Login Student handler
-  const loginStudent = (profileData) => {
+  const loginStudent = useCallback((profileData) => {
     setStudentProfile(profileData);
     if (profileData.collegeId) {
       setSelectedCollegeId(profileData.collegeId);
     }
     setIsLoginModalOpen(false);
-  };
+  }, []);
 
   // Logout / Reset Demo handler
-  const logoutStudent = () => {
+  const logoutStudent = useCallback(() => {
     localStorage.removeItem('settlein_profile');
     localStorage.removeItem('settlein_college');
     localStorage.removeItem('settlein_shortlist');
@@ -138,10 +138,10 @@ export function SettleInProvider({ children }) {
     setRecentlyViewed([]);
     setContactInquiries([]);
     setIsLoginModalOpen(true);
-  };
+  }, []);
 
   // College Switcher Handler
-  const changeCollege = (collegeId) => {
+  const changeCollege = useCallback((collegeId) => {
     setSelectedCollegeId(collegeId);
     setStudentProfile(prev => prev ? ({ ...prev, collegeId }) : {
       name: "Student",
@@ -149,10 +149,10 @@ export function SettleInProvider({ children }) {
       collegeId,
       isLoggedIn: true
     });
-  };
+  }, []);
 
   // Shortlist Handlers
-  const toggleShortlist = (id, type = "housing") => {
+  const toggleShortlist = useCallback((id, type = "housing") => {
     setShortlist(prev => {
       const exists = prev.some(item => item.id === id);
       if (exists) {
@@ -161,18 +161,18 @@ export function SettleInProvider({ children }) {
         return [{ id, type, addedAt: new Date().toISOString() }, ...prev];
       }
     });
-  };
+  }, []);
 
-  const isShortlisted = (id) => {
+  const isShortlisted = useCallback((id) => {
     return shortlist.some(item => item.id === id);
-  };
+  }, [shortlist]);
 
-  const removeFromShortlist = (id) => {
-    setShortlist(prev => prev.filter(item => item.id !== id));
-  };
+  const removeFromShortlist = useCallback((id) => {
+    setShortlist(prev => prev.filter(item => item !== id));
+  }, []);
 
   // Compare Handlers (Max 3)
-  const toggleCompare = (id) => {
+  const toggleCompare = useCallback((id) => {
     setCompareList(prev => {
       if (prev.includes(id)) {
         return prev.filter(itemId => itemId !== id);
@@ -183,26 +183,27 @@ export function SettleInProvider({ children }) {
         return [...prev, id];
       }
     });
-  };
+  }, []);
 
-  const isInCompare = (id) => {
+  const isInCompare = useCallback((id) => {
     return compareList.includes(id);
-  };
+  }, [compareList]);
 
-  const clearCompare = () => {
+  const clearCompare = useCallback(() => {
     setCompareList([]);
-  };
+  }, []);
 
-  // Record viewed property
-  const recordView = (id) => {
+  // Record viewed property with stable reference
+  const recordView = useCallback((id) => {
     setRecentlyViewed(prev => {
+      if (prev[0] === id) return prev; // Avoid unnecessary state updates
       const filtered = prev.filter(item => item !== id);
       return [id, ...filtered].slice(0, 10);
     });
-  };
+  }, []);
 
   // Add Contact Inquiry
-  const submitInquiry = ({ propertyId, propertyName, ownerName, studentMessage }) => {
+  const submitInquiry = useCallback(({ propertyId, propertyName, ownerName, studentMessage }) => {
     const newInquiry = {
       id: "inq-" + Date.now(),
       propertyId,
@@ -213,7 +214,7 @@ export function SettleInProvider({ children }) {
       status: "Sent to Owner"
     };
     setContactInquiries(prev => [newInquiry, ...prev]);
-  };
+  }, []);
 
   // Filter helper functions (fallback gracefully if college not yet chosen)
   const effectiveCollegeId = selectedCollegeId || 'vit-pune';
