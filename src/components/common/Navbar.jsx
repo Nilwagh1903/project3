@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { MapPin, Bookmark, Compass, Home, UtensilsCrossed, Bus, User, Menu, X, ChevronDown, Check, LogOut, LogIn } from 'lucide-react';
+import { MapPin, Bookmark, Compass, Home, UtensilsCrossed, Bus, User, Menu, X, ChevronDown, Check, LogOut, LogIn, Download } from 'lucide-react';
 import { useSettleIn } from '../../context/SettleInContext';
 
 export default function Navbar() {
@@ -18,6 +18,28 @@ export default function Navbar() {
   const [isCollegeMenuOpen, setIsCollegeMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [installPrompt, setInstallPrompt] = useState(null);
+
+  useEffect(() => {
+    const handler = (e) => {
+      e.preventDefault();
+      setInstallPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (installPrompt) {
+      installPrompt.prompt();
+      const choice = await installPrompt.userChoice;
+      if (choice?.outcome === 'accepted') {
+        setInstallPrompt(null);
+      }
+    } else {
+      alert("📲 To install SettleIn as an app on your phone:\n\n1. In Chrome, tap the 3 dots (⋮) in the top-right.\n2. Tap 'Install app' or 'Add to Home screen'.\n3. An app icon will be added to your phone screen!");
+    }
+  };
 
   const navLinks = [
     { label: "Explore", to: "/explore", icon: Compass },
@@ -146,6 +168,16 @@ export default function Navbar() {
 
           {/* Right: Profile, Login & Actions */}
           <div className="hidden sm:flex items-center gap-3">
+            <button
+              type="button"
+              onClick={handleInstallClick}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-teal-50 hover:bg-teal-100 border border-teal-200 text-teal-800 text-xs font-semibold transition-colors"
+              title="Install SettleIn on your phone or laptop"
+            >
+              <Download className="w-3.5 h-3.5 text-teal-600" />
+              <span>Install App</span>
+            </button>
+
             <Link
               to="/compare"
               className="text-xs text-slate-600 hover:text-slate-900 font-medium px-2.5 py-1.5 rounded-lg border border-slate-200 hover:border-slate-300 transition-colors"
@@ -300,6 +332,17 @@ export default function Navbar() {
           >
             <span>Compare Properties</span>
           </Link>
+          <button
+            type="button"
+            onClick={() => {
+              setIsMobileMenuOpen(false);
+              handleInstallClick();
+            }}
+            className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-semibold text-teal-800 bg-teal-50 hover:bg-teal-100 border border-teal-200"
+          >
+            <Download className="w-4 h-4 text-teal-600" />
+            <span>📲 Install App on Phone</span>
+          </button>
           <Link
             to="/profile"
             onClick={() => setIsMobileMenuOpen(false)}

@@ -10,7 +10,8 @@ import {
   Phone,
   MessageCircle,
   ArrowLeft,
-  Layers
+  Layers,
+  ArrowUp
 } from 'lucide-react';
 import { useSettleIn } from '../context/SettleInContext';
 import { HOUSING_LISTINGS } from '../data/listings';
@@ -36,6 +37,16 @@ export default function PropertyDetails() {
 
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [copiedShare, setCopiedShare] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  // Monitor scroll for back-to-top button
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 350);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Find property
   const property = HOUSING_LISTINGS.find((p) => p.id === id) || HOUSING_LISTINGS[0];
@@ -379,6 +390,19 @@ export default function PropertyDetails() {
         onClose={() => setIsContactOpen(false)}
         property={property}
       />
+
+      {/* Floating Scroll to Top button for phones and laptops */}
+      {showScrollTop && (
+        <button
+          type="button"
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="fixed bottom-20 md:bottom-8 right-5 z-40 px-3.5 py-2.5 rounded-full bg-slate-900/90 text-white shadow-xl hover:bg-teal-600 active:scale-95 transition-all flex items-center gap-1.5 text-xs font-bold border border-slate-700 backdrop-blur-xs animate-in fade-in"
+          title="Scroll up to top"
+        >
+          <ArrowUp className="w-4 h-4 text-teal-400" />
+          <span>Top</span>
+        </button>
+      )}
 
     </div>
   );

@@ -1,0 +1,19 @@
+﻿{
+  "name": "SettleIn — Campus Living",
+  "short_name": "SettleIn",
+  "description": "Your first week on campus, sorted. Find verified PGs, food messes, and transit.",
+  "start_url": "/#/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f172a",
+  "theme_color": "#0d9488",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

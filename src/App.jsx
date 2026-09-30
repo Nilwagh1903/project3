@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { SettleInProvider, useSettleIn } from './context/SettleInContext';
 import Navbar from './components/common/Navbar';
 import MobileNav from './components/common/MobileNav';
